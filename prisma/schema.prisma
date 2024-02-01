@@ -11,7 +11,49 @@ datasource db {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     String
+  bio      String
+  avatar   String
+
+  favoriteBooks Book[] @relation(name: "FavoriteBooks")
+  readingLists  Book[] @relation(name: "ReadingLists")
+  readingBook   Book?  @relation(name: "Reader")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Author {
+  id        Int      @id @default(autoincrement())
+  name      String
+  bio       String
+  books     Book[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book {
+  id            Int    @id @default(autoincrement())
+  title         String
+  description   String
+  price         Float
+  numberOfPages Int
+  genrer        String
+  image         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reader User? @relation(name: "Reader", fields: [userId], references: [id])
+  userId Int?  @unique
+
+  readersList    User[] @relation(name: "ReadingLists")
+  favoritesBooks User[] @relation(name: "FavoriteBooks")
+
+  author   Author @relation(fields: [authorId], references: [id])
+  authorId Int
 }
